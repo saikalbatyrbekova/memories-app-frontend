@@ -45,5 +45,43 @@ export const EntryForm = ({ onSubmit }) => {
     </form>
   )
 }
+const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check for valid image file
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Invalid file format');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const imageData = await entryApi.addImage(entryId, file);
+      setImage(imageData);  // Store the image data (URL)
+      setError('');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <form>
+        <label>
+          Upload Image:
+          <input type="file" onChange={handleImageChange} />
+        </label>
+        {loading && <p>Uploading...</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {image && <img src={image.url} alt="Uploaded" width="100" />}
+      </form>
+    </div>
+  );
+  
+export default EntryForm;
 
 

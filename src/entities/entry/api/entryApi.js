@@ -55,5 +55,28 @@ export const entryApi = {
           if (!response.ok) throw new Error('Failed to fetch entries');
           return response.json();
         },
-  };    
+
+  async addImage(entryId, file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const response = await axios.post(`/api/entries/${entryId}/upload-image`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;  // Return the uploaded image data (URL or file info)
+    } catch (error) {
+      throw new Error('Image upload failed');
+    }
+  },
+  async deleteImage(entryId) {
+    try {
+      await axios.delete(`/api/entries/${entryId}/delete-image`);
+    } catch (error) {
+      throw new Error('Image delete failed');
+    }
+  },
+};
+
 
